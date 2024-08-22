@@ -1,37 +1,30 @@
-import { Context,Hono } from 'hono'
-import { authHandler,initAuthConfig,verifyAuth,type AuthConfig } from "@hono/auth-js"
-import { handle } from '@hono/node-server/vercel'
-import { cors } from "hono/cors"
+import { Hono } from 'hono'
+import { handle } from 'hono/vercel'
+
 export const runtime = 'nodejs'
 
 export const dynamic = 'force-dynamic'
 
 import userRoutes from "./user";
-import { authOptions } from '@/auth.config'
+import { auth } from '@/auth'
 
 
-
-const app = new Hono({ strict: false }).basePath('/api')
+const app = new Hono({ strict: false }).basePath('/api');
 
 const routes = app.route("/user",userRoutes)
 
-app.use("*",initAuthConfig(getAuthConfig))
 
 
-app.use(
-	"*",
-	cors({
-		origin: (origin) => origin,
-		allowHeaders: ["Content-Type"],
-		allowMethods: ["*"],
-		maxAge: 86400,
-		credentials: true,
-	})
-)
-
-app.use("/api/auth/*",authHandler())
-
-app.use('/api/*',verifyAuth())
+// app.use(
+// 	"*",
+// 	cors({
+// 		origin: (origin) => origin,
+// 		allowHeaders: ["Content-Type"],
+// 		allowMethods: ["*"],
+// 		maxAge: 86400,
+// 		credentials: true,
+// 	})
+// )
 
 app.get('/hello',(c) => {
 	return c.json({
@@ -39,27 +32,19 @@ app.get('/hello',(c) => {
 	})
 })
 
-app.get('/protected',(c) => {
-	const auth = c.get("authUser");
-	console.log(auth?.session);
-	if (!auth) return c.json({
+app.get('/protected',async (c) => {
+	const session = await auth();
+	if (!session) return c.json({
 		error: "Unauthorized",
 	},401);
 
-	return c.json(JSON.stringify(auth));
+	return c.json(session);
 })
 
-function getAuthConfig(c: Context): AuthConfig {
-	return {
-		secret: process.env.AUTH_SECRET!,
-		...authOptions
-	}
-}
 
 export const GET = handle(app)
 export const POST = handle(app)
 export const PUT = handle(app)
 export const DELETE = handle(app)
-export const PATCH = handle(app)
 
 export type AppType = typeof routes;

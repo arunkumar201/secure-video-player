@@ -20,7 +20,7 @@ export const AuthProviders = [
 
 ] satisfies NextAuthConfig["providers"]
 
-export const authOptions: NextAuthConfig = {
+const authOptions: NextAuthConfig = {
 	providers: AuthProviders,
 	adapter: DrizzleAdapter(db),
 	session: {
@@ -43,7 +43,6 @@ export const authOptions: NextAuthConfig = {
 		}
 
 	},
-	callbacks: {
-
-	}
 }
+
+export default authOptions;
