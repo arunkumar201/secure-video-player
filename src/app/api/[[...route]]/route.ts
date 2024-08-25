@@ -6,14 +6,14 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 import userRoutes from "./user";
+import paymentRoutes from "./payment";
+import videoRoutes from "./video";
 import { auth } from '@/auth'
 
 
 const app = new Hono({ strict: false }).basePath('/api');
 
-const routes = app.route("/user",userRoutes)
-
-
+const routes = app.route("/user",userRoutes).route("/payments",paymentRoutes).route("/video",videoRoutes);
 
 // app.use(
 // 	"*",

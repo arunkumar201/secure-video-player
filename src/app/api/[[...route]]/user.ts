@@ -21,7 +21,6 @@ const app = new Hono()
 			},404)
 		}
 
-		console.log("User in Hono RPC",JSON.stringify(user[0]));
 
 		return c.json({ isPremium: user[0].isPremium })
 	})

@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
-
+import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,6 +24,7 @@ export default async function RootLayout({
 			<body className={inter.className}>
 				<SessionProvider session={session}>
 					<ReactQueryProvider>
+						<Toaster position="bottom-right" />
 						<Navbar />
 						{children}
 					</ReactQueryProvider>

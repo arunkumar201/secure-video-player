@@ -15,6 +15,9 @@ export const useUserPremiumStatus = () => {
 			const data = await response.json();
 
 			return data;
-		}
+		},
+		refetchOnWindowFocus: true,
+		staleTime: 1000,
+
 	});
 };
