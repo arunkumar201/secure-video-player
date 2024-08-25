@@ -17,28 +17,19 @@ export const VideoPlayer = () => {
 		isLoading: isLoadingVideoUrl,
 		isPending: isLoadingVideoUrlPending,
 		error: errorVideoUrl,
-	} = useSignedVideoUrl(videoURL);
+	} = useSignedVideoUrl({ iFrameUrl: videoURL, isPremium: data?.isPremium });
 
 	async function upgradeToPremium(): Promise<void> {
 		subscribeToPremium();
 		return;
 	}
-	if (isLoading || isPending || isLoadingVideoUrl || isLoadingVideoUrlPending) {
+	if (isLoading || isPending) {
 		return (
 			<div className="w-full h-full flex justify-center items-center">
 				Loading...
 			</div>
 		);
 	}
-
-	if (error || !signedVideoUrlData || errorVideoUrl) {
-		return (
-			<div className="w-full h-full flex justify-center items-center">
-				<p>There was an error loading the video. Please try again later.</p>
-			</div>
-		);
-	}
-
 	if (data && !data.isPremium) {
 		return (
 			<div className="w-full h-full flex flex-col justify-center items-center mt-24">
@@ -50,6 +41,21 @@ export const VideoPlayer = () => {
 				>
 					Please upgrade to a premium account
 				</Button>
+			</div>
+		);
+	}
+	if (isLoadingVideoUrl || isLoadingVideoUrlPending) {
+		return (
+			<div className="w-full h-full flex justify-center items-center">
+				Loading video...
+			</div>
+		);
+	}
+
+	if (error || errorVideoUrl) {
+		return (
+			<div className="w-full h-full flex justify-center items-center">
+				<p>There was an error loading the video. Please try again later.</p>
 			</div>
 		);
 	}

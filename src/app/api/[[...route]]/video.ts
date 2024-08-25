@@ -36,6 +36,22 @@ const app = new Hono()
 		return c.json({ signedIframeUrl },200);
 
 
+	})
+	.post('/cancel-subscription',async (c) => {
+		const session = await auth();
+		if (!session) return c.json({ error: "Unauthorized" },401);
+
+
+		//check the user premium status 
+		const user = await db.select().from(users).where(eq(users.email,session.user?.email!)).execute();
+
+		if (!user[0].isPremium) return c.json({ error: "User is not premium" },403);
+
+		//update the user premium status
+		await db.update(users).set({ isPremium: false }).where(eq(users.email,session.user?.email!)).execute();
+
+		return c.json({ message: "Subscription cancelled successfully" });
+
 	});
 
 export default app;

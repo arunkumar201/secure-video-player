@@ -1,9 +1,12 @@
 import { honoClient } from "@/lib/hono-client";
 import { useQuery } from "@tanstack/react-query"
 
+interface IUseSignedVideoUrl {
+	iFrameUrl: string;
+	isPremium: boolean | undefined | null;
+}
 
-
-export const useSignedVideoUrl = (iFrameUrl: string) => {
+export const useSignedVideoUrl = ({ iFrameUrl,isPremium }: IUseSignedVideoUrl) => {
 
 	const query = useQuery({
 		queryKey: ['signed-video-url'],
@@ -19,7 +22,7 @@ export const useSignedVideoUrl = (iFrameUrl: string) => {
 			const data = await response.json();
 			return data;
 		},
-
+		enabled: !!isPremium,
 	})
 	return query;
 }
